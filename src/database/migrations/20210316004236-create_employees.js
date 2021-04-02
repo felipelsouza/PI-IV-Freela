@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable('employees', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -21,24 +21,28 @@ module.exports = {
       password: {
         type: Sequelize.STRING,
         allowNull: false,
-        select: false
+        select: false,
       },
       cellphone: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+      },
+      formation: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       created_at: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
       },
       updated_at: {
         type: Sequelize.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('users');
-  }
+    await queryInterface.dropTable('employees');
+  },
 };
