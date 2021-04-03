@@ -12,6 +12,7 @@ const create = async (req, res) => {
     if (
       name.trim().length === 0 ||
       email.trim().length === 0 ||
+      cellphone.trim().length === 0 ||
       password.trim().length === 0 ||
       company.trim().length === 0 ||
       role.trim().length === 0
@@ -55,6 +56,27 @@ const create = async (req, res) => {
   }
 };
 
+const list = async (req, res) => {
+  try {
+    const employers = await Employer.findAll({
+      attributes: [
+        'id',
+        'name',
+        'email',
+        'cellphone',
+        'company',
+        'role',
+        'created_at',
+        'updated_at',
+      ],
+    });
+
+    return res.status(200).json(employers);
+  } catch (err) {
+    return res.status(400).json({ message: 'Não foi possível listar os empregadores' });
+  }
+};
+
 const index = async (req, res) => {
   const { id } = req.params;
 
@@ -66,6 +88,7 @@ const index = async (req, res) => {
         'email',
         'cellphone',
         'company',
+        'role',
         'created_at',
         'updated_at',
       ],
@@ -79,7 +102,7 @@ const index = async (req, res) => {
 
 const update = async (req, res) => {
   const { id } = req.params;
-  const { name, email, cellphone, company } = req.body;
+  const { name, email, cellphone, company, role } = req.body;
 
   try {
     if (!name || name.trim().length === 0) {
@@ -94,6 +117,9 @@ const update = async (req, res) => {
     if (!company || company.trim().length === 0) {
       return res.status(400).json({ message: 'Empresa não pode ser vazia!' });
     }
+    if (!role || role.trim().length === 0) {
+      return res.status(400).json({ message: 'Cargo não pode ser vazio!' });
+    }
 
     const employer = await Employer.findByPk(id, {
       attributes: [
@@ -102,11 +128,12 @@ const update = async (req, res) => {
         'email',
         'cellphone',
         'company',
+        'role',
         'created_at',
         'updated_at',
       ],
     })
-      .then((user) => user.update({ name, email, cellphone, company }))
+      .then((user) => user.update({ name, email, cellphone, company, role }))
       .catch((err) => res.status(500).json(err));
 
     return res.status(200).json({ message: 'Dados atualizados', employer });
@@ -131,4 +158,4 @@ const destroy = async (req, res) => {
   }
 };
 
-module.exports = { create, index, update, destroy };
+module.exports = { create, list, index, update, destroy };
