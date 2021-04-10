@@ -2,19 +2,22 @@ const express = require('express');
 
 const employerController = require('./controllers/EmployerController');
 const employeeController = require('./controllers/EmployeeController');
+const jobController = require('./controllers/JobController');
 
 const routes = express.Router();
 
-routes.post('/employer', employerController.create);
+routes.post('/employers', employerController.create);
 routes.get('/employers', employerController.list);
-routes.get('/employer/:id', employerController.index);
-routes.put('/employer/:id', employerController.update);
-routes.delete('/employer/:id', employerController.destroy);
+routes.get('/employers/:id', employerController.index);
+routes.put('/employers/:id', employerController.update);
+routes.delete('/employers/:id', employerController.destroy);
 
-routes.post('/employee', employeeController.create);
+routes.post('/employees', employeeController.create);
 routes.get('/employees', employeeController.list);
-routes.get('/employee/:id', employeeController.index);
-routes.put('/employee/:id', employeeController.update);
-routes.delete('/employee/:id', employeeController.destroy);
+routes.get('/employees/:id', employeeController.index);
+routes.put('/employees/:id', employeeController.update);
+routes.delete('/employees/:id', employeeController.destroy);
+
+routes.post('/employers/:employer_id/jobs', jobController.create);
 
 module.exports = routes;

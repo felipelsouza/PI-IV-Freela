@@ -37,9 +37,7 @@ module.exports = {
         allowNull: false,
       },
       dev_type: {
-        type: Sequelize.DataTypes.ENUM({
-          values: ['frontend', 'backend','fullstack']
-        }),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       created_at: {

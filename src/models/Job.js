@@ -7,7 +7,7 @@ class Job extends Model {
         name: DataTypes.STRING,
         description: DataTypes.STRING,
         salary: DataTypes.DOUBLE,
-        dev_type: DataTypes.ENUM,
+        dev_type: DataTypes.STRING,
       },
       {
         underscored: true,
