@@ -16,6 +16,10 @@ class Employee extends Model {
       }
     );
   }
+
+  static associate(models) {
+    this.hasMany(models.Job, { foreignKey: 'employee_id', as: 'employees' })
+  }
 }
 
 module.exports = Employee;
