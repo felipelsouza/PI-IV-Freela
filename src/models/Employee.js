@@ -9,6 +9,7 @@ class Employee extends Model {
         password: DataTypes.STRING,
         cellphone: DataTypes.STRING,
         formation: DataTypes.STRING,
+        dev_type: DataTypes.STRING,
       },
       {
         underscored: true,
@@ -18,7 +19,7 @@ class Employee extends Model {
   }
 
   static associate(models) {
-    this.hasMany(models.Job, { foreignKey: 'employee_id', as: 'employees' })
+    this.hasMany(models.Job, { foreignKey: 'employee_id', as: 'employees' });
   }
 }
 

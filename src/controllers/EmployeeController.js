@@ -2,10 +2,10 @@ const Employee = require('../models/Employee');
 const bcrypt = require('bcrypt');
 
 const create = async (req, res) => {
-  const { name, email, password, cellphone, formation } = req.body;
+  const { name, email, password, cellphone, formation, dev_type } = req.body;
 
   try {
-    if (!name || !email || !password || !cellphone || !formation) {
+    if (!name || !email || !password || !cellphone || !formation || !dev_type) {
       return res.status(400).json({ message: 'Preencha todos os campos!' });
     }
 
@@ -14,7 +14,8 @@ const create = async (req, res) => {
       email.trim().length === 0 ||
       password.trim().length === 0 ||
       cellphone.trim().length === 0 ||
-      formation.trim().length === 0
+      formation.trim().length === 0 ||
+      dev_type.trim().length === 0
     ) {
       return res.status(400).json({ message: 'Preencha todos os campos!' });
     }
@@ -35,12 +36,18 @@ const create = async (req, res) => {
 
     const encryptedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
 
+    const devTypes = ['frontend', 'backend', 'fullstack'];
+    if (!devTypes.includes(dev_type)) {
+      return res.status(400).json({ message: 'Tipo de desenvolvedor inválido' });
+    }
+
     const employee = await Employee.create({
       name,
       email: email.toLowerCase(),
       password: encryptedPassword,
       cellphone,
       formation,
+      dev_type,
     });
 
     employee.password = undefined;
@@ -63,6 +70,7 @@ const list = async (req, res) => {
         'email',
         'cellphone',
         'formation',
+        'dev_type',
         'created_at',
         'updated_at',
       ],
@@ -85,6 +93,7 @@ const index = async (req, res) => {
         'email',
         'cellphone',
         'formation',
+        'dev_type',
         'created_at',
         'updated_at',
       ],
@@ -98,7 +107,7 @@ const index = async (req, res) => {
 
 const update = async (req, res) => {
   const { id } = req.params;
-  const { name, email, cellphone, formation } = req.body;
+  const { name, email, cellphone, formation, dev_type } = req.body;
 
   try {
     if (!name || name.trim().length === 0) {
@@ -114,6 +123,15 @@ const update = async (req, res) => {
       return res.status(400).json({ message: 'Formação não pode ser vazia!' });
     }
 
+    if (!dev_type || dev_type.trim().length === 0) {
+      return res.status(400).json({ message: 'Formação não pode ser vazia!' });
+    }
+
+    const devTypes = ['frontend', 'backend', 'fullstack'];
+    if (!devTypes.includes(dev_type)) {
+      return res.status(400).json({ message: 'Tipo de desenvolvedor inválido' });
+    }
+
     const employee = await Employee.findByPk(id, {
       attributes: [
         'id',
@@ -121,11 +139,12 @@ const update = async (req, res) => {
         'email',
         'cellphone',
         'formation',
+        'dev_type',
         'created_at',
         'updated_at',
       ],
     })
-      .then((user) => user.update({ name, email, cellphone, formation }))
+      .then((user) => user.update({ name, email, cellphone, formation, dev_type }))
       .catch((err) => res.status(500).json(err));
 
     return res.status(200).json({ message: 'Dados atualizados', employee });
