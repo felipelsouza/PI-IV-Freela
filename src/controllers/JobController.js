@@ -8,9 +8,11 @@ const create = async (req, res) => {
 
   try {
     const employer = await Employer.findByPk(employer_id);
-    
+
     if (!employer) {
-      return res.status(400).json({ message: `Não existe empregador com esse id: ${employer_id}` });
+      return res
+        .status(400)
+        .json({ message: `Não existe empregador com esse id: ${employer_id}` });
     }
 
     if (!name || name.trim().length === 0) {
@@ -34,46 +36,76 @@ const create = async (req, res) => {
       return res.status(400).json({ message: 'Tipo de desenvolvedor inválido' });
     }
 
-    const job = await Job.create({employer_id, name, description, salary:parseInt(salary), dev_type});
-    console.log(job)
-    return res.status(201).json({message: 'Vaga criada com sucesso', job});
+    const job = await Job.create({
+      employer_id,
+      name,
+      description,
+      salary: parseInt(salary),
+      dev_type,
+    });
 
+    return res.status(201).json({ message: 'Vaga criada com sucesso', job });
   } catch (err) {
-    return res.status(400).json({ message: 'Não foi possível registrar a vaga', err});
+    return res.status(500).json({ message: 'Não foi possível registrar a vaga', err });
   }
 };
 
-const index = async (req, res) => {
-  const { } = req.params;
+const listAll = async (req, res) => {
+  try {
+    const jobs = await Job.findAll();
+
+    if (!jobs) {
+      return res.status(204).json({ message: 'Não existem vagas disponíveis' });
+    }
+
+    return res.status(200).json(jobs);
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ message: 'Não foi possível listar as vagas de emprego' });
+  }
+};
+
+const listByType = async (req, res) => {
+  const { dev_type } = req.params;
 
   try {
+    const devTypes = ['frontend', 'backend', 'fullstack'];
+    if (!devTypes.includes(dev_type)) {
+      return res.status(400).json({ message: 'Tipo de desenvolvedor inválido' });
+    }
 
+    const jobs = Job.findAll({ where: { dev_type } });
 
+    if (!jobs) {
+      return res
+        .status(204)
+        .json({ message: 'Não existem vagas disponíveis para o tipo de desenvolvedor' });
+    }
+
+    res.status(201).json(jobs);
   } catch (err) {
-    return res.status(400).json({ message: '' });
+    return res.status(500).json({ message: 'Não foi possível listar as vagas', err });
   }
 };
 
 const update = async (req, res) => {
-  const { } = req.params;
-  const { } = req.body;
+  const {} = req.params;
+  const {} = req.body;
 
   try {
-
-
   } catch (err) {
-    return res.status(400).json({ message: '', err });
+    return res.status(500).json({ message: '', err });
   }
 };
 
 const destroy = async (req, res) => {
-  const { } = req.params;
+  const {} = req.params;
 
   try {
-
   } catch (err) {
-    return res.status(400).json({ message: '', err });
+    return res.status(500).json({ message: '', err });
   }
 };
 
-module.exports = { create, index, update, destroy };
+module.exports = { create, listAll, listByType };
