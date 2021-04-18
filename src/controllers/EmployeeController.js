@@ -78,7 +78,7 @@ const list = async (req, res) => {
 
     return res.status(200).json(employees);
   } catch (err) {
-    return res.status(400).json({ message: 'Não foi possível listar os empregadores' });
+    return res.status(500).json({ message: 'Não foi possível listar os empregadores' });
   }
 };
 
@@ -101,7 +101,7 @@ const index = async (req, res) => {
 
     return res.status(200).json(employee);
   } catch (err) {
-    return res.status(400).json({ message: 'Não foi possível encontrar o Empregado' });
+    return res.status(500).json({ message: 'Não foi possível encontrar o Empregado' });
   }
 };
 
@@ -149,7 +149,7 @@ const update = async (req, res) => {
 
     return res.status(200).json({ message: 'Dados atualizados', employee });
   } catch (err) {
-    return res.status(400).json({ message: 'Não foi possível atualizar os dados', err });
+    return res.status(500).json({ message: 'Não foi possível atualizar os dados', err });
   }
 };
 
@@ -163,7 +163,7 @@ const destroy = async (req, res) => {
 
     return res.status(200).json({ message: 'Empregado deletado' });
   } catch (err) {
-    return res.status(400).json({ message: 'Não foi possível deletar o Empregado', err });
+    return res.status(500).json({ message: 'Não foi possível deletar o Empregado', err });
   }
 };
 
