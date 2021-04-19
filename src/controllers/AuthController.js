@@ -1,5 +1,6 @@
 const Employer = require('../models/Employer');
 const Employee = require('../models/Employee');
+const token = require('../services/token');
 const bcrypt = require('bcrypt');
 
 const employerLogin = async (req, res) => {
@@ -16,9 +17,13 @@ const employerLogin = async (req, res) => {
     return res.status(401).json({ message: 'Email ou senha incorretos!' });
   }
 
-  return res
-    .status(200)
-    .json({ message: 'Autenticação efetuada!', employerId: employer.id });
+  const generatedToken = token.sign({ id: employer.id });
+
+  return res.status(200).json({
+    message: 'Autenticação efetuada!',
+    employerId: employer.id,
+    token: generatedToken,
+  });
 };
 
 const employeeLogin = async (req, res) => {
@@ -35,9 +40,13 @@ const employeeLogin = async (req, res) => {
     return res.status(401).json({ message: 'Email ou senha incorretos!' });
   }
 
-  return res
-    .status(200)
-    .json({ message: 'Autenticação efetuada!', employeeId: employee.id });
+  const generatedToken = token.sign({ id: employee.id });
+
+  return res.status(200).json({
+    message: 'Autenticação efetuada!',
+    employeeId: employee.id,
+    token: generatedToken,
+  });
 };
 
 module.exports = { employerLogin, employeeLogin };
