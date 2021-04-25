@@ -9,8 +9,7 @@ const authMiddleware = require('./middlewares/auth');
 
 const routes = express.Router();
 
-routes.post('/employers/auth', authController.employerLogin);
-routes.post('/employees/auth', authController.employeeLogin);
+routes.post('/auth', authController.login);
 
 routes.post('/employers', employerController.create);
 routes.get('/employers', authMiddleware, employerController.list);

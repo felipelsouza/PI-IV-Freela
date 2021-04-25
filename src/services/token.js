@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const sign = (payload) => {
-  console.log(process.env.JWT_SECRET);
   const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '30d' });
   return token;
 };

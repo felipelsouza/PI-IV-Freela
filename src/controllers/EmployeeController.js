@@ -1,4 +1,5 @@
 const Employee = require('../models/Employee');
+const Employer = require('../models/Employer');
 const bcrypt = require('bcrypt');
 
 const create = async (req, res) => {
@@ -28,9 +29,9 @@ const create = async (req, res) => {
       return res.status(400).json({ message: 'E-mail inválido!' });
     }
 
-    const hasEmail = await Employee.findOne({ where: { email: email.toLowerCase() } });
-
-    if (hasEmail) {
+    const hasEmployee = await Employee.findOne({ where: { email: email.toLowerCase() } });
+    const hasEmployer = await Employer.findOne({ where: { email: email.toLowerCase() } });
+    if (hasEmployee || hasEmployer) {
       return res.status(401).json({ message: 'E-mail já está cadastrado!' });
     }
 
