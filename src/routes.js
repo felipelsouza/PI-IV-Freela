@@ -23,8 +23,10 @@ routes.get('/employees/:id', authMiddleware, employeeController.index);
 routes.put('/employees/:id', authMiddleware, employeeController.update);
 routes.delete('/employees/:id', authMiddleware, employeeController.destroy);
 
-routes.post('/employers/:employer_id/jobs', authMiddleware, jobController.create);
+routes.post('/jobs/employers/:employer_id', authMiddleware, jobController.create);
 routes.get('/jobs', authMiddleware, jobController.listAll);
-routes.get('/jobs/dev-type/:dev_type', authMiddleware, jobController.listByType);
+routes.get('/jobs/dev-types/:dev_type', authMiddleware, jobController.listByType);
+routes.get('/jobs/employers/:employer_id', authMiddleware, jobController.listByEmployer);
+routes.get('/jobs/employers/:employee_id', authMiddleware, jobController.listByEmployee);
 
 module.exports = routes;

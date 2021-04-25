@@ -89,6 +89,40 @@ const listByType = async (req, res) => {
   }
 };
 
+const listByEmployer = async (req, res) => {
+  const { employer_id } = req.params;
+
+  try {
+    const jobs = await Job.findAll({ where: { employer_id } });
+
+    if (!jobs) {
+      return res
+        .status(204)
+        .json({ message: 'Não existem vagas disponíveis deste Contratante' });
+    }
+
+    res.status(201).json(jobs);
+  } catch (err) {
+    return res.status(500).json({ message: 'Não foi possível listar as vagas', err });
+  }
+};
+
+const listByEmployee = async (req, res) => {
+  const { employee_id } = req.params;
+
+  try {
+    const jobs = await Job.findAll({ where: { employee_id } });
+
+    if (!jobs) {
+      return res.status(204).json({ message: 'Não existem vagas relacionadas' });
+    }
+
+    res.status(201).json(jobs);
+  } catch (err) {
+    return res.status(500).json({ message: 'Não foi possível listar as vagas', err });
+  }
+};
+
 const update = async (req, res) => {
   const {} = req.params;
   const {} = req.body;
@@ -108,4 +142,4 @@ const destroy = async (req, res) => {
   }
 };
 
-module.exports = { create, listAll, listByType };
+module.exports = { create, listAll, listByType, listByEmployer, listByEmployee };
