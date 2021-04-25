@@ -123,11 +123,24 @@ const listByEmployee = async (req, res) => {
   }
 };
 
-const update = async (req, res) => {
-  const {} = req.params;
-  const {} = req.body;
+const updateEmployee = async (req, res) => {
+  const { job_id } = req.params;
+  const { employee_id } = req.body;
 
   try {
+    const job = await Job.findByPk(job_id);
+    const employee = await Employee.findByPk(employee_id);
+
+    if (!job) {
+      return res.status(404).json({ message: 'Vaga inexistente' });
+    }
+    if (!employee) {
+      return res.status(404).json({ message: 'Empregado inexistente' });
+    }
+
+    const updatedJob = await job.update({ employee_id });
+
+    return res.status(200).json({ message: 'Vaga atualizada com sucesso!', updatedJob });
   } catch (err) {
     return res.status(500).json({ message: '', err });
   }
@@ -142,4 +155,11 @@ const destroy = async (req, res) => {
   }
 };
 
-module.exports = { create, listAll, listByType, listByEmployer, listByEmployee };
+module.exports = {
+  create,
+  listAll,
+  listByType,
+  listByEmployer,
+  listByEmployee,
+  updateEmployee,
+};
