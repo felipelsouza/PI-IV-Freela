@@ -3,7 +3,7 @@ const Employer = require('../models/Employer');
 const Employee = require('../models/Employee');
 
 const create = async (req, res) => {
-  const { name, description, salary, dev_type } = req.body;
+  const { name, description, salary, dev_type, technologies } = req.body;
   const { employer_id } = req.params;
 
   try {
@@ -36,12 +36,17 @@ const create = async (req, res) => {
       return res.status(400).json({ message: 'Tipo de desenvolvedor inválido' });
     }
 
+    if (!technologies) {
+      return res.status(400).json({ message: 'Selecione as tecnologias' });
+    }
+
     const job = await Job.create({
       employer_id,
       name,
       description,
       salary: parseInt(salary),
       dev_type,
+      technologies,
     });
 
     return res.status(201).json({ message: 'Vaga criada com sucesso', job });

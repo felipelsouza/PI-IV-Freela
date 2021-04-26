@@ -8,6 +8,7 @@ class Job extends Model {
         description: DataTypes.STRING,
         salary: DataTypes.DOUBLE,
         dev_type: DataTypes.STRING,
+        technologies: DataTypes.STRING,
       },
       {
         underscored: true,
@@ -17,8 +18,8 @@ class Job extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Employer, { foreignKey: 'employer_id', as: 'employers' })
-    this.belongsTo(models.Employee, { foreignKey: 'employee_id', as: 'employees' })
+    this.belongsTo(models.Employer, { foreignKey: 'employer_id', as: 'employers' });
+    this.belongsTo(models.Employee, { foreignKey: 'employee_id', as: 'employees' });
   }
 }
 

@@ -4,6 +4,7 @@ const employerController = require('./controllers/EmployerController');
 const employeeController = require('./controllers/EmployeeController');
 const jobController = require('./controllers/JobController');
 const authController = require('./controllers/AuthController');
+const technologyController = require('./controllers/TechnologyController');
 
 const authMiddleware = require('./middlewares/auth');
 
@@ -29,5 +30,7 @@ routes.get('/jobs/dev-types/:dev_type', authMiddleware, jobController.listByType
 routes.get('/jobs/employers/:employer_id', authMiddleware, jobController.listByEmployer);
 routes.get('/jobs/employees/:employee_id', authMiddleware, jobController.listByEmployee);
 routes.put('/jobs/:job_id', authMiddleware, jobController.updateEmployee);
+
+routes.post('/technologies', technologyController.create);
 
 module.exports = routes;
