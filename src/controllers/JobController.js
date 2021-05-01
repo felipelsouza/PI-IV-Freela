@@ -1,6 +1,9 @@
 const Job = require('../models/Job');
 const Employer = require('../models/Employer');
 const Employee = require('../models/Employee');
+const { Op } = require('sequelize');
+const { sequelize } = require('../models/Job');
+const { QueryTypes } = require('sequelize');
 
 const create = async (req, res) => {
   const { name, description, salary, dev_type, technologies } = req.body;
@@ -46,7 +49,7 @@ const create = async (req, res) => {
       description,
       salary: parseInt(salary),
       dev_type,
-      technologies,
+      technologies: JSON.stringify(technologies),
     });
 
     return res.status(201).json({ message: 'Vaga criada com sucesso', job });
@@ -57,7 +60,46 @@ const create = async (req, res) => {
 
 const listAll = async (req, res) => {
   try {
-    const jobs = await Job.findAll();
+    const jobs = await Job.findAll({
+      include: [
+        {
+          association: 'employers',
+          attributes: ['id', 'name', 'email', 'cellphone', 'company', 'role'],
+        },
+        {
+          association: 'employees',
+          attributes: ['id', 'name', 'email', 'cellphone', 'dev_type'],
+        },
+      ],
+    });
+
+    if (!jobs) {
+      return res.status(204).json({ message: 'Não existem vagas disponíveis' });
+    }
+
+    return res.status(200).json(jobs);
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ message: 'Não foi possível listar as vagas de emprego' });
+  }
+};
+
+const listById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const jobs = await Job.findByPk(id, {
+      include: [
+        {
+          association: 'employers',
+          attributes: ['id', 'name', 'email', 'cellphone', 'company', 'role'],
+        },
+        {
+          association: 'employees',
+          attributes: ['id', 'name', 'email', 'cellphone', 'dev_type'],
+        },
+      ],
+    });
 
     if (!jobs) {
       return res.status(204).json({ message: 'Não existem vagas disponíveis' });
@@ -72,7 +114,7 @@ const listAll = async (req, res) => {
 };
 
 const listByType = async (req, res) => {
-  const { dev_type } = req.params;
+  const { dev_type, technologies } = req.body;
 
   try {
     const devTypes = ['frontend', 'backend', 'fullstack'];
@@ -80,7 +122,26 @@ const listByType = async (req, res) => {
       return res.status(400).json({ message: 'Tipo de desenvolvedor inválido' });
     }
 
-    const jobs = Job.findAll({ where: { dev_type } });
+    const jobs = await Job.findAll({
+      where: {
+        [Op.or]: {
+          dev_type,
+          [Op.or]: technologies.map((tech) => {
+            return { technologies: { [Op.like]: `%${tech.name}%` } };
+          }),
+        },
+      },
+      include: [
+        {
+          association: 'employees',
+          attributes: ['id', 'name', 'email', 'cellphone', 'dev_type'],
+        },
+        {
+          association: 'employers',
+          attributes: ['id', 'name', 'email', 'cellphone', 'company', 'role'],
+        },
+      ],
+    });
 
     if (!jobs) {
       return res
@@ -88,7 +149,7 @@ const listByType = async (req, res) => {
         .json({ message: 'Não existem vagas disponíveis para o tipo de desenvolvedor' });
     }
 
-    res.status(201).json(jobs);
+    res.status(200).json(jobs);
   } catch (err) {
     return res.status(500).json({ message: 'Não foi possível listar as vagas', err });
   }
@@ -98,7 +159,20 @@ const listByEmployer = async (req, res) => {
   const { employer_id } = req.params;
 
   try {
-    const jobs = await Job.findAll({ where: { employer_id } });
+    const jobs = await Job.findAll({
+      where: { employer_id },
+      include: [
+        {
+          association: 'employers',
+          attributes: ['id', 'name', 'email', 'cellphone', 'company', 'role'],
+          where: { id: employer_id },
+        },
+        {
+          association: 'employees',
+          attributes: ['id', 'name', 'email', 'cellphone', 'dev_type'],
+        },
+      ],
+    });
 
     if (!jobs) {
       return res
@@ -116,7 +190,20 @@ const listByEmployee = async (req, res) => {
   const { employee_id } = req.params;
 
   try {
-    const jobs = await Job.findAll({ where: { employee_id } });
+    const jobs = await Job.findAll({
+      where: { employee_id },
+      include: [
+        {
+          association: 'employees',
+          attributes: ['id', 'name', 'email', 'cellphone', 'dev_type'],
+          where: { id: employee_id },
+        },
+        {
+          association: 'employers',
+          attributes: ['id', 'name', 'email', 'cellphone', 'company', 'role'],
+        },
+      ],
+    });
 
     if (!jobs) {
       return res.status(204).json({ message: 'Não existem vagas relacionadas' });
@@ -163,6 +250,7 @@ const destroy = async (req, res) => {
 module.exports = {
   create,
   listAll,
+  listById,
   listByType,
   listByEmployer,
   listByEmployee,
