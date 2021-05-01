@@ -2,8 +2,6 @@ const Job = require('../models/Job');
 const Employer = require('../models/Employer');
 const Employee = require('../models/Employee');
 const { Op } = require('sequelize');
-const { sequelize } = require('../models/Job');
-const { QueryTypes } = require('sequelize');
 
 const create = async (req, res) => {
   const { name, description, salary, dev_type, technologies } = req.body;
@@ -77,6 +75,12 @@ const listAll = async (req, res) => {
       return res.status(204).json({ message: 'Não existem vagas disponíveis' });
     }
 
+    jobs.map(async (job) => {
+      let technologiesStr = job.technologies.replace(/[\\{\}\]\[\"]/g, '');
+      technologiesStr = technologiesStr.replace(/name:/g, ' ');
+      job.technologies = technologiesStr;
+    });
+
     return res.status(200).json(jobs);
   } catch (err) {
     return res
@@ -104,6 +108,12 @@ const listById = async (req, res) => {
     if (!jobs) {
       return res.status(204).json({ message: 'Não existem vagas disponíveis' });
     }
+
+    jobs.map(async (job) => {
+      let technologiesStr = job.technologies.replace(/[\\{\}\]\[\"]/g, '');
+      technologiesStr = technologiesStr.replace(/name:/g, ' ');
+      job.technologies = technologiesStr;
+    });
 
     return res.status(200).json(jobs);
   } catch (err) {
@@ -149,6 +159,12 @@ const listByType = async (req, res) => {
         .json({ message: 'Não existem vagas disponíveis para o tipo de desenvolvedor' });
     }
 
+    jobs.map(async (job) => {
+      let technologiesStr = job.technologies.replace(/[\\{\}\]\[\"]/g, '');
+      technologiesStr = technologiesStr.replace(/name:/g, ' ');
+      job.technologies = technologiesStr;
+    });
+
     res.status(200).json(jobs);
   } catch (err) {
     return res.status(500).json({ message: 'Não foi possível listar as vagas', err });
@@ -180,6 +196,12 @@ const listByEmployer = async (req, res) => {
         .json({ message: 'Não existem vagas disponíveis deste Contratante' });
     }
 
+    jobs.map(async (job) => {
+      let technologiesStr = job.technologies.replace(/[\\{\}\]\[\"]/g, '');
+      technologiesStr = technologiesStr.replace(/name:/g, ' ');
+      job.technologies = technologiesStr;
+    });
+
     res.status(201).json(jobs);
   } catch (err) {
     return res.status(500).json({ message: 'Não foi possível listar as vagas', err });
@@ -208,6 +230,12 @@ const listByEmployee = async (req, res) => {
     if (!jobs) {
       return res.status(204).json({ message: 'Não existem vagas relacionadas' });
     }
+
+    jobs.map(async (job) => {
+      let technologiesStr = job.technologies.replace(/[\\{\}\]\[\"]/g, '');
+      technologiesStr = technologiesStr.replace(/name:/g, ' ');
+      job.technologies = technologiesStr;
+    });
 
     res.status(201).json(jobs);
   } catch (err) {
