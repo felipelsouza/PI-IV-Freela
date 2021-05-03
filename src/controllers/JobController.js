@@ -267,11 +267,14 @@ const updateEmployee = async (req, res) => {
 };
 
 const destroy = async (req, res) => {
-  const {} = req.params;
+  const { id } = req.params;
 
   try {
+    await Job.destroy({ where:id });
+    
+    return res.status(200).json({ message: 'Vaga deletada com sucesso!' });
   } catch (err) {
-    return res.status(500).json({ message: '', err });
+    return res.status(500).json({ message: 'Não foi possível deletar a vaga!', err });
   }
 };
 
@@ -283,4 +286,5 @@ module.exports = {
   listByEmployer,
   listByEmployee,
   updateEmployee,
+  destroy,
 };
