@@ -31,6 +31,7 @@ routes.get('/jobs/:id', authMiddleware, jobController.listById);
 routes.get('/jobs/employers/:employer_id', authMiddleware, jobController.listByEmployer);
 routes.get('/jobs/employees/:employee_id', authMiddleware, jobController.listByEmployee);
 routes.put('/jobs/:job_id', authMiddleware, jobController.updateEmployee);
+routes.put('/jobs/:job_id/update', authMiddleware, jobController.updateJob);
 routes.delete('/jobs/:id', authMiddleware, jobController.destroy);
 
 routes.post('/technologies', technologyController.create);
