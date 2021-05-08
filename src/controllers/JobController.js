@@ -270,8 +270,13 @@ const destroy = async (req, res) => {
   const { id } = req.params;
 
   try {
-    await Job.destroy({ where:id });
-    
+    const job = await Job.findByPk(id);
+
+    if (!job) {
+      return res.status(404).json({ message: 'Vaga inexistente' });
+    }
+
+    await Job.destroy({ where: { id } });
     return res.status(200).json({ message: 'Vaga deletada com sucesso!' });
   } catch (err) {
     return res.status(500).json({ message: 'Não foi possível deletar a vaga!', err });
