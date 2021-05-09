@@ -5,6 +5,7 @@ const employeeController = require('./controllers/EmployeeController');
 const jobController = require('./controllers/JobController');
 const authController = require('./controllers/AuthController');
 const technologyController = require('./controllers/TechnologyController');
+const matchController = require('./controllers/MatchController');
 
 const authMiddleware = require('./middlewares/auth');
 
@@ -31,9 +32,14 @@ routes.get('/jobs/:id', authMiddleware, jobController.listById);
 routes.get('/jobs/employers/:employer_id', authMiddleware, jobController.listByEmployer);
 routes.get('/jobs/employees/:employee_id', authMiddleware, jobController.listByEmployee);
 routes.put('/jobs/:job_id', authMiddleware, jobController.updateEmployee);
-routes.put('/jobs/:job_id/update', authMiddleware, jobController.updateJob);
+// routes.put('/jobs/:job_id/update', authMiddleware, jobController.updateJob);
 routes.delete('/jobs/:id', authMiddleware, jobController.destroy);
 
 routes.post('/technologies', technologyController.create);
+
+routes.post('/jobs/:job_id/matches', authMiddleware, matchController.create);
+routes.get('/employers/:employer_id/jobs/matches', authMiddleware, matchController.list);
+routes.get('/jobs/:job_id/matches/:match_id', authMiddleware, matchController.index);
+routes.patch('/jobs/:job_id/matches/:match_id', authMiddleware, matchController.patch);
 
 module.exports = routes;
