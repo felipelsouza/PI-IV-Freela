@@ -20,6 +20,7 @@ class Job extends Model {
   static associate(models) {
     this.belongsTo(models.Employer, { foreignKey: 'employer_id', as: 'employers' });
     this.belongsTo(models.Employee, { foreignKey: 'employee_id', as: 'employees' });
+    this.hasMany(models.Match, { foreignKey: 'job_id', as: 'job' });
   }
 }
 
