@@ -243,6 +243,26 @@ const listByEmployee = async (req, res) => {
   }
 };
 
+const updateJob = async (req, res) => {
+  const { job_id } = req.params;
+  const { name, description, salary, dev_type, technologies } = req.body;
+
+  try {
+    const job = await Job.findByPk(job_id);
+
+    if (!job) {
+      return res.status(404).json({ message: 'Vaga inexistente' });
+    }
+
+    const updatedJob = await job.update({ name, description, salary, dev_type, technologies });
+
+    return res.status(200).json({ message: 'Vaga atualizada com sucesso!', updatedJob });
+  } catch (err) {
+    return res.status(500).json({ message: '', err });
+  }
+};
+
+
 const destroy = async (req, res) => {
   const { id } = req.params;
 
@@ -267,5 +287,6 @@ module.exports = {
   listByType,
   listByEmployer,
   listByEmployee,
+  updateJob,
   destroy,
 };
