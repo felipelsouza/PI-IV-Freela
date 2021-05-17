@@ -45,6 +45,27 @@ const list = async (req, res) => {
   }
 };
 
+const listByJobId = async (req, res) => {
+  const { employer_id, job_id } = req.params;
+
+  try {
+    const matches = await Match.findAll({
+      where: { employer_id, job_id },
+      include: {
+        association: 'employee',
+        attributes: ['id', 'name', 'email', 'cellphone', 'dev_type', 'formation'],
+      },
+    });
+    if (matches.length === 0) {
+      return res.status(204).json({ message: 'Não existem Matches para esta vagas' });
+    }
+
+    return res.status(200).json(matches);
+  } catch (err) {
+    return res.status(500).json({ message: 'Não foi possível listar os Matches' });
+  }
+};
+
 const index = async (req, res) => {
   const { match_id, job_id } = req.params;
 
@@ -99,4 +120,4 @@ const patch = async (req, res) => {
   }
 };
 
-module.exports = { create, list, index, patch };
+module.exports = { create, list, index, patch, listByJobId };

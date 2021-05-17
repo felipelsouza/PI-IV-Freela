@@ -38,6 +38,11 @@ routes.post('/technologies', technologyController.create);
 
 routes.post('/jobs/:job_id/matches', authMiddleware, matchController.create);
 routes.get('/employers/:employer_id/jobs/matches', authMiddleware, matchController.list);
+routes.get(
+  '/employers/:employer_id/jobs/:job_id/matches',
+  authMiddleware,
+  matchController.listByJobId
+);
 routes.get('/jobs/:job_id/matches/:match_id', authMiddleware, matchController.index);
 routes.patch('/jobs/:job_id/matches/:match_id', authMiddleware, matchController.patch);
 
