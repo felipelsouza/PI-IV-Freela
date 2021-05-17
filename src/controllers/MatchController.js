@@ -13,16 +13,22 @@ const create = async (req, res) => {
       return res.status(404).json({ message: 'Vaga inexistente!' });
     }
 
-    const match = await Match.create({
+    const match = await Match.findAll({ where: { job_id, employee_id } });
+    if (match) {
+      return res.status(400).json({ message: 'Você já se candidatou para esta vaga!' });
+    }
+
+    const createdMatch = await Match.create({
       employer_id: job.employer_id,
       job_id: job.id,
       employee_id,
       status: null,
     });
 
-    return res
-      .status(201)
-      .json({ message: 'Candidatura para a vaga realizada com sucesso!', match });
+    return res.status(201).json({
+      message: 'Candidatura para a vaga realizada com sucesso!',
+      match: createdMatch,
+    });
   } catch (err) {
     return res
       .status(500)
