@@ -44,7 +44,7 @@ routes.get(
   matchController.listByJobId
 );
 routes.get(
-  '/employee/:employee_id/matches/',
+  '/employees/:employee_id/matches/',
   authMiddleware,
   matchController.listByEmployee
 );
