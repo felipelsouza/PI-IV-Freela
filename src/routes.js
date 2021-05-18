@@ -43,6 +43,11 @@ routes.get(
   authMiddleware,
   matchController.listByJobId
 );
+routes.get(
+  '/employee/:employee_id/matches/',
+  authMiddleware,
+  matchController.listByEmployee
+);
 routes.get('/jobs/:job_id/matches/:match_id', authMiddleware, matchController.index);
 routes.patch('/jobs/:job_id/matches/:match_id', authMiddleware, matchController.patch);
 
